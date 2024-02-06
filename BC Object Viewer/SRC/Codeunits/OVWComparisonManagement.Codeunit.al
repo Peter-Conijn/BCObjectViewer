@@ -115,7 +115,7 @@ codeunit 50132 "OVW Comparison Management"
             Error(MissingAppNameErr);
         OVWObjectComparison.Init();
         OVWObjectComparison.Origin := Enum::"OVW Origin"::Generated;
-        OVWObjectComparison."App Name" := AppName;
+        OVWObjectComparison."App Name" := CopyStr(AppName, 1, MaxStrLen(OVWObjectComparison."App Name"));
         OVWObjectComparison."Object Type" := Enum::"OVW Object Type".FromInteger(AllObj."Object Type");
         OVWObjectComparison."Object ID" := AllObj."Object ID";
         OVWObjectComparison."Object Name" := AllObj."Object Name";
