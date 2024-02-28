@@ -1,3 +1,8 @@
+namespace ALRabbit.BCObjectViewer.Common.Excel;
+
+using System.IO;
+using System.Reflection;
+
 codeunit 50138 "OVW Export to Excel"
 {
     internal procedure ExportRecordToExcel(TableID: Integer)

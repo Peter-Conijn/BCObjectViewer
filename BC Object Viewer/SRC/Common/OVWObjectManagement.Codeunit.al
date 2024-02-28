@@ -1,3 +1,7 @@
+namespace ALRabbit.BCObjectViewer.Common;
+
+using System.Reflection;
+
 codeunit 50131 "OVW Object Management"
 {
     Access = Internal;

@@ -1,3 +1,8 @@
+namespace ALRabbit.BCObjectViewer.Viewers.ObjectsPerApp;
+
+using System.Reflection;
+using ALRabbit.BCObjectViewer.Common;
+
 page 50133 "OVW Application Objects"
 {
     PageType = ListPart;

@@ -1,3 +1,8 @@
+namespace ALRabbit.BCObjectViewer.Common.Excel;
+
+using System.IO;
+using System.Utilities;
+
 tableextension 50131 "OVW Excel Buffer" extends "Excel Buffer"
 {
     fields
