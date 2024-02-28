@@ -1,3 +1,7 @@
+namespace ALRabbit.BCObjectViewer.Viewers.ObjectsPerApp.Dependencies;
+
+using System.Apps;
+
 codeunit 50137 "OVW Dependency Management"
 {
     Permissions = tabledata "NAV App Installed App" = R,

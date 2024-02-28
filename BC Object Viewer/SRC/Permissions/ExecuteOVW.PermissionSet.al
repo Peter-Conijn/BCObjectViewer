@@ -1,3 +1,9 @@
+namespace ALRabbit.BCObjectViewer.Permissions;
+
+using System.Apps;
+using System.Reflection;
+using ALRabbit.BCObjectViewer.Permissions.Internal;
+
 permissionset 50131 "OVW - Execute"
 {
     Assignable = true;

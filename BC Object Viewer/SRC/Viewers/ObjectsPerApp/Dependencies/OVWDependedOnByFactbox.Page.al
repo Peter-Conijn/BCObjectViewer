@@ -1,3 +1,5 @@
+namespace ALRabbit.BCObjectViewer.Viewers.ObjectsPerApp.Dependencies;
+
 page 50137 "OVW Depended On By - Factbox"
 {
     Caption = 'Depended On By';
