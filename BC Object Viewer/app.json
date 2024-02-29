@@ -25,10 +25,12 @@
     "allowDownloadingSource": false,
     "includeSourceInSymbolFile": false
   },
-  "features": 
-    [
-      "NoImplicitWith",
-      "TranslationFile"
-    ],
+  "features": [
+    "NoImplicitWith",
+    "TranslationFile"
+  ],
+  "preprocessorSymbols": [
+    "CLEAN2"
+  ],
   "runtime": "12.1"
 }

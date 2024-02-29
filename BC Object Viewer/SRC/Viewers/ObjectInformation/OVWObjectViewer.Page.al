@@ -78,6 +78,7 @@ page 50130 "OVW Object Viewer"
             {
                 ApplicationArea = All;
                 Caption = 'Run Object';
+                ToolTip = 'Run the selected object. The object will be run in the current company context if applicable.';
                 Image = Start;
                 Promoted = true;
                 PromotedCategory = Process;
@@ -113,6 +114,7 @@ page 50130 "OVW Object Viewer"
             {
                 ApplicationArea = All;
                 Caption = 'Show All';
+                ToolTip = 'Show all objects.';
                 Image = Start;
                 Promoted = true;
                 PromotedCategory = New;
@@ -128,6 +130,7 @@ page 50130 "OVW Object Viewer"
             {
                 ApplicationArea = All;
                 Caption = 'Show Tables';
+                ToolTip = 'Show all tables.';
                 Image = "Table";
                 Promoted = true;
                 PromotedCategory = New;
@@ -143,6 +146,7 @@ page 50130 "OVW Object Viewer"
             {
                 ApplicationArea = All;
                 Caption = 'Show Pages';
+                ToolTip = 'Show all pages.';
                 Image = ViewPage;
                 Promoted = true;
                 PromotedCategory = New;
@@ -158,6 +162,7 @@ page 50130 "OVW Object Viewer"
             {
                 ApplicationArea = All;
                 Caption = 'Show Codeunits';
+                ToolTip = 'Show all codeunits.';
                 Image = Setup;
                 Promoted = true;
                 PromotedCategory = New;
@@ -173,6 +178,7 @@ page 50130 "OVW Object Viewer"
             {
                 ApplicationArea = All;
                 Caption = 'Show Reports';
+                ToolTip = 'Show all reports.';
                 Image = Report;
                 Promoted = true;
                 PromotedCategory = New;
@@ -205,9 +211,9 @@ page 50130 "OVW Object Viewer"
 
     local procedure RunApplicationObject()
     var
-        PCOObjectManagement: Codeunit "OVW Object Management";
+        OVWObjectManagement: Codeunit "OVW Object Management";
     begin
-        PCOObjectManagement.RunApplicationObject(Rec);
+        OVWObjectManagement.RunApplicationObject(Rec);
     end;
 
     local procedure GetRecordCount(ForObjectType: Option; ForObjectID: Integer): Integer

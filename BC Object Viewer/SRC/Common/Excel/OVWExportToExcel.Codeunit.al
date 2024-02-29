@@ -7,76 +7,72 @@ codeunit 50138 "OVW Export to Excel"
 {
     internal procedure ExportRecordToExcel(TableID: Integer)
     var
-        RecRef: RecordRef;
+        SourceRecordRef: RecordRef;
     begin
-        if not TryOpenRecRef(RecRef, TableID) then
+        if not TryOpenRecRef(SourceRecordRef, TableID) then
             exit;
 
-        if not RecRef.ReadPermission then
+        if not SourceRecordRef.ReadPermission then
             exit;
 
         RowNo := 1;
-        if RecRef.FindSet() then begin
+        if SourceRecordRef.FindSet() then
             repeat
-                EXportRecordRefToExcel(RecRef, TableID);
-            until RecRef.Next() = 0;
-        end;
-        TempExcelBuffer.CreateExcelBook(RecRef.Name); //change into table name?
+                ExportRecordRefToExcel(SourceRecordRef);
+            until SourceRecordRef.Next() = 0;
+
+        TempExcelBuffer.CreateExcelBook(SourceRecordRef.Name); //change into table name?
     end;
 
-    local procedure EXportRecordRefToExcel(var Ref: RecordRef; TableID: Integer)
+    local procedure ExportRecordRefToExcel(var SourceRecordRef: RecordRef)
     var
         FieldIndex: Integer;
     begin
         ColumnNo := 1;
         RowNo += 1;
 
-        for FieldIndex := 1 to Ref.FieldCount() do begin
-            ExportFieldRefToExcel(Ref, FieldIndex, TableID);
-        end;
+        for FieldIndex := 1 to SourceRecordRef.FieldCount() do
+            ExportFieldRefToExcel(SourceRecordRef, FieldIndex);
     end;
 
-    local procedure ExportFieldRefToExcel(var Ref: RecordRef; var i: Integer; TableID: Integer)
+    local procedure ExportFieldRefToExcel(var SourceRecordRef: RecordRef; Index: Integer)
     var
-        FRef: FieldRef;
+        SourceFieldRef: FieldRef;
     begin
-        FRef := Ref.FieldIndex(i);
+        SourceFieldRef := SourceRecordRef.FieldIndex(Index);
 
-        if not IsFieldEnabled(FRef, TableID) then
+        if not IsFieldEnabled(SourceFieldRef) then
             exit;
 
-        case FRef.Class of
-            FRef.Class::Normal:
+        case SourceFieldRef.Class of
+            SourceFieldRef.Class::Normal:
+                TempExcelBuffer.AddCell(RowNo, ColumnNo, SourceFieldRef.Value, CopyStr(SourceFieldRef.Caption(), 1, 250), 1);
+            SourceFieldRef.Class::FlowField:
                 begin
-                    TempExcelBuffer.AddCell(RowNo, ColumnNo, FRef.Value, FRef.Caption, 1);
-                end;
-
-            FRef.Class::FlowField:
-                begin
-                    FRef.CalcField();
-                    TempExcelBuffer.AddCell(RowNo, ColumnNo, FRef.Value, FRef.Caption, 1);
+                    SourceFieldRef.CalcField();
+                    TempExcelBuffer.AddCell(RowNo, ColumnNo, SourceFieldRef.Value, CopyStr(SourceFieldRef.Caption(), 1, 250), 1);
                 end;
             else
-                OnAfterAddCellWithFieldClass(RowNo, ColumnNo, FRef);
+                OnAfterAddCellWithFieldClass(RowNo, ColumnNo, SourceFieldRef);
         end;
     end;
 
-    local procedure IsFieldEnabled(FRef: FieldRef; TableID: Integer): Boolean
+    local procedure IsFieldEnabled(var SourceFieldRef: FieldRef): Boolean
     var
         FieldRecord: Record Field;
     begin
-        if FieldRecord.Get(FRef.Record().Number, FRef.Number) then
+        if FieldRecord.Get(SourceFieldRef.Record().Number, SourceFieldRef.Number) then
             exit(FieldRecord.Enabled);
     end;
 
     [TryFunction]
-    local procedure TryOpenRecRef(RecRef: RecordRef; TableID: Integer)
+    local procedure TryOpenRecRef(var SourceRecordRef: RecordRef; TableID: Integer)
     begin
-        RecRef.Open(TableID);
+        SourceRecordRef.Open(TableID);
     end;
 
     [IntegrationEvent(false, false)]
-    local procedure OnAfterAddCellWithFieldClass(RowNo: Integer; ColumnNo: Integer; FRef: FieldRef)
+    local procedure OnAfterAddCellWithFieldClass(RowNo: Integer; ColumnNo: Integer; SourceFieldRef: FieldRef)
     begin
     end;
 
