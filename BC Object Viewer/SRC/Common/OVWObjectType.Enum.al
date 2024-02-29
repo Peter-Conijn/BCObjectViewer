@@ -1,3 +1,8 @@
+namespace ALRabbit.BCObjectViewer.Common;
+
+/// <summary>
+/// Specifies the type of the object.
+/// </summary>
 enum 50131 "OVW Object Type"
 {
     Extensible = true;

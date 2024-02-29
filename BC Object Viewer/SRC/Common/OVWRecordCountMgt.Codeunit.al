@@ -1,3 +1,5 @@
+namespace ALRabbit.BCObjectViewer.Common;
+
 codeunit 50133 "OVW Record Count Mgt."
 {
     procedure GetRecordCount(TableId: Integer): Integer

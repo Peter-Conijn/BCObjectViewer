@@ -1,3 +1,10 @@
+namespace ALRabbit.BCObjectViewer.Viewers.ObjectInformation;
+
+using System.Reflection;
+using System.Apps;
+using ALRabbit.BCObjectViewer.Common;
+using ALRabbit.BCObjectViewer.Common.Excel;
+
 page 50130 "OVW Object Viewer"
 {
     Caption = 'Object Viewer';

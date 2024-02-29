@@ -1,3 +1,5 @@
+namespace ALRabbit.BCObjectViewer.Viewers.ObjectsPerApp.Dependencies;
+
 table 50131 "OVW App Dependency"
 {
     DataClassification = SystemMetadata;
