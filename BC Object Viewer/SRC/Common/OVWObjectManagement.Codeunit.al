@@ -12,7 +12,7 @@ codeunit 50131 "OVW Object Management"
     begin
         Url := GetUrl(ClientType::Web, CompanyName(), GetObjectType(AllObjWithCaption."Object Type"), AllObjWithCaption."Object ID");
         if not TryOpenUrl(Url) then
-            GenerateError(AllObjWithCaption);
+            GenerateError();
     end;
 
     [TryFunction]
@@ -39,7 +39,7 @@ codeunit 50131 "OVW Object Management"
         end;
     end;
 
-    local procedure GenerateError(AllObjWithCaption: Record AllObjWithCaption)
+    local procedure GenerateError()
     var
         HyperlinkFailedErr: Label 'Hyperlinking to the selected object failed. Please see the message for more information.';
     begin

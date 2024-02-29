@@ -14,12 +14,12 @@ tableextension 50131 "OVW Excel Buffer" extends "Excel Buffer"
         }
     }
 
-    procedure AddCell(RowNo: Integer; var ColumnNo: Integer; CellValue: Variant; HeadingTxt: Text[250]; ColumnIncrement: Integer)
+    procedure AddCell(RowNo: Integer; var ColumnNo: Integer; CellValueVariant: Variant; HeadingTxt: Text[250]; ColumnIncrement: Integer)
     begin
-        AddCellWithFormatting(RowNo, ColumnNo, CellValue, HeadingTxt, false, false, false, 2, ColumnIncrement);
+        AddCellWithFormatting(RowNo, ColumnNo, CellValueVariant, HeadingTxt, false, false, false, 2, ColumnIncrement);
     end;
 
-    procedure AddCellWithFormatting(RowNo: Integer; var ColumnNo: Integer; CellValue: Variant; HeadingTxt: Text[250]; IsBold: Boolean; IsItalic: Boolean; IsUnderlined: Boolean; NumberOfDecimals: Integer; ColumnIncrement: Integer)
+    procedure AddCellWithFormatting(RowNo: Integer; var ColumnNo: Integer; CellValueVariant: Variant; HeadingTxt: Text[250]; IsBold: Boolean; IsItalic: Boolean; IsUnderlined: Boolean; NumberOfDecimals: Integer; ColumnIncrement: Integer)
     var
         ExcelBuffer: Record "Excel Buffer";
         DecimalNotationTxt: Text;
@@ -41,43 +41,34 @@ tableextension 50131 "OVW Excel Buffer" extends "Excel Buffer"
         end;
 
         case true of
-            CellValue.IsInteger,
-            CellValue.IsDecimal,
-            CellValue.IsDuration,
-            CellValue.IsBigInteger:
+            CellValueVariant.IsInteger,
+            CellValueVariant.IsDecimal,
+            CellValueVariant.IsDuration,
+            CellValueVariant.IsBigInteger:
                 begin
                     NumberFormat := '0';
                     "Cell Type" := "Cell Type"::Number;
-                    if CellValue.IsDecimal then
-                        NumberFormat := DecimalNotationTxt;
+                    if CellValueVariant.IsDecimal then
+                        NumberFormat := CopyStr(DecimalNotationTxt, 1, MaxStrLen(NumberFormat));
                 end;
 
-            CellValue.IsDate:
-                begin
-                    "Cell Type" := "Cell Type"::Date;
-                end;
-
-            CellValue.IsTime:
-                begin
-                    "Cell Type" := "Cell Type"::Time;
-                end;
-
-            CellValue.IsDateTime:
-                begin
-                    "Cell Type" := "Cell Type"::Date;
-                end;
-
+            CellValueVariant.IsDate:
+                "Cell Type" := "Cell Type"::Date;
+            CellValueVariant.IsTime:
+                "Cell Type" := "Cell Type"::Time;
+            CellValueVariant.IsDateTime:
+                "Cell Type" := "Cell Type"::Date;
             else begin
                 "Cell Type" := "Cell Type"::Text;
-                if StrLen(Format(CellValue)) > MaxStrLen("Cell Value as Text") then begin
+                if StrLen(Format(CellValueVariant)) > MaxStrLen("Cell Value as Text") then begin
                     "OVW Value is BLOB" := true;
-                    ConvertStringToBlob(Format(CellValue), TempBlob);
+                    ConvertStringToBlob(Format(CellValueVariant), TempBlob);
                     TempBlob.FromRecord(Rec, FieldNo("Cell Value as Blob"));
                 end;
             end;
         end;
         if not "OVW Value is BLOB" then
-            "Cell Value as Text" := Format(CellValue);
+            "Cell Value as Text" := Format(CellValueVariant);
 
         if not ExcelBuffer.Get(Rec."Row No.", Rec."Column No.") then
             Rec.Insert()
@@ -117,24 +108,21 @@ tableextension 50131 "OVW Excel Buffer" extends "Excel Buffer"
 
     procedure CreateFile(SheetNameTxt: Text)
     begin
-        CreateNewBook(SheetNameTxt);
+        CreateNewBook(CopyStr(SheetNameTxt, 1, 250));
         WriteSheet(CopyStr(SheetNameTxt, 1, 80), CompanyName, UserId);
         CloseBook();
         OpenExcel();
     end;
 
 
-    procedure ConvertStringToBlob(Input: Text; var TempBlob: Codeunit "Temp Blob"): Integer
+    procedure ConvertStringToBlob(Input: Text; var NewTempBlob: Codeunit "Temp Blob"): Integer
     var
-        WriteStream: OutStream;
+        DataOutStream: OutStream;
     begin
-        TempBlob.CreateOutStream(WriteStream, TextEncoding::UTF8);
-        WriteStream.WriteText(Input);
+        NewTempBlob.CreateOutStream(DataOutStream, TextEncoding::UTF8);
+        DataOutStream.WriteText(Input);
     end;
 
     var
         TempBlob: Codeunit "Temp Blob";
-
-        ExcelBookCreated: Boolean;
-        NewSheetName: text[20];
 }

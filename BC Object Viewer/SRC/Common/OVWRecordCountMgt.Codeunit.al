@@ -4,10 +4,10 @@ codeunit 50133 "OVW Record Count Mgt."
 {
     procedure GetRecordCount(TableId: Integer): Integer
     var
-        RecRef: RecordRef;
+        SourceRecordRef: RecordRef;
     begin
-        RecRef.Open(TableId);
-        if RecRef.ReadPermission() then
-            exit(RecRef.Count);
+        SourceRecordRef.Open(TableId);
+        if SourceRecordRef.ReadPermission() then
+            exit(SourceRecordRef.Count());
     end;
 }

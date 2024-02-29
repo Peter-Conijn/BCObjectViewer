@@ -60,6 +60,7 @@ page 50133 "OVW Application Objects"
             {
                 ApplicationArea = All;
                 Caption = 'Run Object';
+                ToolTip = 'Runs the selected object.';
                 Image = Start;
 
                 trigger OnAction();
@@ -72,9 +73,9 @@ page 50133 "OVW Application Objects"
 
     local procedure RunApplicationObject()
     var
-        PCOObjectManagement: Codeunit "OVW Object Management";
+        OVWObjectManagement: Codeunit "OVW Object Management";
     begin
-        PCOObjectManagement.RunApplicationObject(Rec);
+        OVWObjectManagement.RunApplicationObject(Rec);
     end;
 
     local procedure GetRecordCount(ForObjectType: Option; ForObjectID: Integer): Integer

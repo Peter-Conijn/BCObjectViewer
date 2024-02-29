@@ -38,27 +38,28 @@ codeunit 50137 "OVW Dependency Management"
         if ModuleDependencies.Count() = 0 then
             exit;
 
-        foreach ModuleDependency in ModuleDependencies do begin
+        foreach ModuleDependency in ModuleDependencies do
             InitDependencyRecord(NAVAppInstalledApp, ModuleDependency);
-        end;
 
         OnAfterInitDependencyRecords(NAVAppInstalledApp);
     end;
 
     local procedure InitDependencyRecord(NAVAppInstalledApp: Record "NAV App Installed App"; ModuleDependency: ModuleDependencyInfo)
     var
-        OVWAppDependencies: Record "OVW App Dependency";
+        OVWAppDependency: Record "OVW App Dependency";
     begin
-        OVWAppDependencies.Init();
-        OVWAppDependencies."App Id" := NAVAppInstalledApp."App ID";
-        OVWAppDependencies."Dependent App Id" := ModuleDependency.Id;
-        OVWAppDependencies."App Name" := NAVAppInstalledApp.Name;
-        OVWAppDependencies."Dependent App Name" := ModuleDependency.Name;
-        OVWAppDependencies."App Publisher" := NAVAppInstalledApp.Publisher;
-        OVWAppDependencies."Dependent App Publisher" := ModuleDependency.Publisher;
-
-        OnBeforeInitDependencyRecord(NAVAppInstalledApp, ModuleDependency, OVWAppDependencies);
-        OVWAppDependencies.Insert(true);
+        OVWAppDependency.Init();
+        OVWAppDependency."App Id" := NAVAppInstalledApp."App ID";
+        OVWAppDependency."Dependent App Id" := ModuleDependency.Id;
+        OVWAppDependency."App Name" := NAVAppInstalledApp.Name;
+        OVWAppDependency."Dependent App Name" := CopyStr(ModuleDependency.Name, 1, MaxStrLen(OVWAppDependency."Dependent App Name"));
+        OVWAppDependency."App Publisher" := NAVAppInstalledApp.Publisher;
+        OVWAppDependency."Dependent App Publisher" := CopyStr(ModuleDependency.Publisher, 1, MaxStrLen(OVWAppDependency."Dependent App Publisher"));
+#if CLEAN2
+        OnBeforeInitDependencyRecord(NAVAppInstalledApp, ModuleDependency, OVWAppDependency);
+#endif        
+        OnBeforeInitializeDependencyRecord(NAVAppInstalledApp, ModuleDependency, OVWAppDependency);
+        OVWAppDependency.Insert(true);
     end;
 
     local procedure GetDependencies(NAVAppInstalledApp: Record "NAV App Installed App"): List of [ModuleDependencyInfo];
@@ -71,10 +72,10 @@ codeunit 50137 "OVW Dependency Management"
 
     local procedure ClearDependencyTable()
     var
-        OVWAppDependencies: Record "OVW App Dependency";
+        OVWAppDependency: Record "OVW App Dependency";
     begin
-        if not OVWAppDependencies.IsEmpty() then
-            OVWAppDependencies.DeleteAll(true);
+        if not OVWAppDependency.IsEmpty() then
+            OVWAppDependency.DeleteAll(true);
     end;
 
     [IntegrationEvent(false, false)]
@@ -87,8 +88,16 @@ codeunit 50137 "OVW Dependency Management"
     begin
     end;
 
+#if CLEAN2
     [IntegrationEvent(false, false)]
+    [Obsolete('Use OnBeforeInitializeDependencyRecord instead')]
     local procedure OnBeforeInitDependencyRecord(NAVAppInstalledApp: Record "NAV App Installed App"; ModuleDependency: ModuleDependencyInfo; var OVWAppDependencies: Record "OVW App Dependency")
+    begin
+    end;
+#endif    
+
+    [IntegrationEvent(false, false)]
+    local procedure OnBeforeInitializeDependencyRecord(NAVAppInstalledApp: Record "NAV App Installed App"; ModuleDependency: ModuleDependencyInfo; var OVWAppDependency: Record "OVW App Dependency")
     begin
     end;
 }
